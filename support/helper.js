@@ -34,18 +34,8 @@ function Helper () {
 
   // receives a locator and return true if the element is being displayed
   this.isDisplayed = function (locator) {
-    return browser.wait(protractor.ExpectedConditions.visibilityOf(locator), waitTime)
-  }
-
-  // receives a locator and return true if the element is present
-  this.isPresent = function (locator) {
-    return browser.wait(protractor.ExpectedConditions.presenceOf(locator), waitTime)
-    // return locator.isDisplayed()
-  }
-
-  // receives a locator and return true if the element is not present
-  this.isNotPresent = function (locator) {
-    return browser.wait(protractor.ExpectedConditions.stalenessOf(locator), waitTime)
+    browser.wait(protractor.ExpectedConditions.visibilityOf(locator), waitTime)
+    return locator.isDisplayed()
   }
 
   // receives a locator of a textfield element and clear it

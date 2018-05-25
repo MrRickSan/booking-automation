@@ -10,10 +10,10 @@ exports.config = {
   capabilities: {
     browserName: 'chrome',
     chromeOptions: {
-      args: [ 'lang=en-us', 'disable-infobars', 'incognito' ],
+      args: [ 'lang=en-us', 'disable-infobars' ],
       prefs: {
         'profile.managed_default_content_settings.notifications': 1,
-        // 'profile.default_content_setting_values.geolocation': 2,
+        'profile.default_content_setting_values.geolocation': 2,
         'credentials_enable_service': false,
         'profile': {'password_manager_enabled': false}
       }
@@ -37,8 +37,9 @@ exports.config = {
   getPageTimeout: 10 * 1000,
   allScriptsTimeout: 10 * 1000,
 
-  onPrepare: async () => {
-    await browser.manage().window().maximize() // eslint-disable-line
+  onPrepare: () => {
+    browser.driver.manage().deleteAllCookies() // eslint-disable-line
+    browser.manage().window().maximize() // eslint-disable-line
     browser.ignoreSynchronization = true // eslint-disable-line
     global.expect = chai.expect // Chai is a assertion library used on steps
     global.helper = Helper
