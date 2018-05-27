@@ -17,7 +17,7 @@ var hooks = function () {
     brandTitle: 'Cucumber Test Report',
     name: 'Addison Global Ltd. Automation Task',
     metadata: {
-      'Browser': 'Chrome Version 66.0.3359.139 (Official Build) (64-bit)',
+      'Browser': 'Chrome',
       'Platform': 'Windows 10',
       'Parallel': 'Scenarios',
       'Executed': 'Remote'

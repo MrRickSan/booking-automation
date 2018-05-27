@@ -1,4 +1,4 @@
-/* global browser, require, module, expect */
+/* global require, module, expect */
 const bookingHomePage = require('../page-objects/home-page')
 const basePage = require('../page-objects/base-page')
 
@@ -18,7 +18,6 @@ var BookingSteps = function () {
   })
 
   this.Then(/^The "([^"]*)" currency symbol is displayed and "([^"]*)" language is selected$/, function (currencySymbol, language) {
-    browser.sleep(2000)
     expect(bookingHomePage.getCurrentCurrency()).to.eventually.equal(currencySymbol)
     return expect(bookingHomePage.getCurrentLanguage()).to.eventually.equal('Select your language. Your current language is ' + language)
   })
@@ -28,12 +27,10 @@ var BookingSteps = function () {
   })
 
   this.When(/^I select the CheckIn in last day of current month and CheckOut in first day of next month$/, function () {
-    browser.sleep(1000)
     return bookingHomePage.selectCheckInAndCheckOut()
   })
 
   this.When(/^I choose "([^"]*)" adult$/, function (number) {
-    browser.sleep(1000)
     return bookingHomePage.selectAdultNumber(number)
   })
 

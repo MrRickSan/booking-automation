@@ -29,7 +29,7 @@ npm install
 protractor conf.js
 ```
 
-### 3. The reports are being be created inside reports folder after execution
+### 3. The reports are being be created inside reports folder after each execution
 
 ```
 /*/reports/

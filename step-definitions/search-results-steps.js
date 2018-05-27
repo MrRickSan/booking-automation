@@ -16,8 +16,8 @@ var SearchResultsSteps = function () {
     return searchResultsPage.checkTravelingForWork()
   })
 
-  this.Then(/^The list of hotels available is displayed$/, function () {
-    return searchResultsPage.filterByRating()
+  this.Then(/^I found a result with a review mark of higher than "([^"]*)" and price under "([^"]*)" EUR$/, function (reviewMark, price) {
+    return searchResultsPage.getResultWithReviewMarkAndPrice(reviewMark, price)
   })
 }
 

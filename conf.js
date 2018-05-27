@@ -1,4 +1,4 @@
-const Helper = require('./support/helper')
+const helper = require('./support/helper')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 chai.use(chaiAsPromised)
@@ -42,7 +42,7 @@ exports.config = {
     browser.manage().window().maximize() // eslint-disable-line
     browser.ignoreSynchronization = true // eslint-disable-line
     global.expect = chai.expect // Chai is a assertion library used on steps
-    global.helper = Helper
+    global.helper = helper
   }
 
 }

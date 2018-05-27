@@ -11,25 +11,22 @@ class SearchResultsPage {
       return element(by.css('div.sr_item:nth-child(' + index + ') > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(3)'))
     }
 
+    // locates the price section in the passed element index
     this.price = function (index) {
-      console.log(`Price element index: ${index}`)
-      var innerPrice = element(by.css('div.sr_item:nth-child(' + index + ') > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div:nth-child(2) > strong:nth-child(1) > b:nth-child(1) > span:nth-child(1)'))
-      var pathToRoomDetails = element(by.css('div.sr_item:nth-child(' + index + ') > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(3)'))
+      // path to room details
+      var resultItem = element(by.css('div.sr_item:nth-child(' + index + ') > div:nth-child(2)')).element(by.css('div.sr_rooms_table_block.clearfix div.room_details'))
 
-      return pathToRoomDetails.isPresent().then(async function (visible) {
-        if (visible) {
-          // It has price displayed
-          await innerPrice.isPresent().then(function (visible) { if (visible) { return innerPrice } })
-          return element(by.css('div.sr_item:nth-child(' + index + ') > div:nth-child(2) > div:nth-child(3) > div:nth-child(1) > div:nth-child(3) > div:nth-child(2)'))
-        } else {
-          return pathToRoomDetails
-        }
-      })
+      // two possible types of price locator
+      var innerPrice = resultItem.element(by.css('div.sr_gr.sr-group_recommendation div.js_rackrate_animation_anchor.smart_price_style.gray-icon.totalPrice.totalPrice_rack-rate.entire_row_clickable.animated strong.price.availprice.no_rack_rate.sr_gs_rackrate_price.jq_tooltip'))
+      var innerPrice2 = resultItem.element(by.css('div.sr_gr.sr-group_recommendation div.totalPrice.totalPrice_no-rack-rate.entire_row_clickable'))
+
+      if (innerPrice2.isPresent()) { return innerPrice2 }
+      return innerPrice
     }
 
+    // locates the hotel name in the passed element index
     this.propertyName = function (index) {
-      console.log(`Property name index: ${index}`)
-      return element(by.css('div.sr_item:nth-child(' + index + ') > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > h3:nth-child(1) > a:nth-child(1) > span:nth-child(1)'))
+      return element(by.css('div.sr_item:nth-child(' + index + ') > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > h3:nth-child(1) > a:nth-child(1)')).element(by.css('span.sr-hotel__name'))
     }
 
     this.noRoms = function (num) {
@@ -50,30 +47,28 @@ class SearchResultsPage {
     return helper.click(this.travelingForWork)
   }
 
-  filterByRating () {
+  /* This method receives a review mark and a price, and returns the first
+     matching in the search result  */
+  async getResultWithReviewMarkAndPrice (reviewMark, limitPrice) {
     var price = this.price
     var propertyName = this.propertyName
-    var match = this.resultsWithRequiredRating.then(async function (items) {
-      for (var i = 0; i < items.length; i++) {
-        match = await items[i].getAttribute('data-score').then(async function (score) {
-          var value = await price(i + 1).getText().then(function (value) { if (value) { return value } })
-          value = value.split('$ ')
-          console.log('Com valor: ' + value[1])
-          if (score >= '8.0' && Number(value[1]) < 600) {
-            var name = await propertyName(i + 1).getText().then(function (value) { return value })
-            console.log('Caiu no if com index: ' + i)
-            console.log('Com score: ' + score)
-            console.log('Com nome: ' + name)
-            return name
-          }
-        })
-        if (match) {
-          return match
+    var itemPriceValue, name, score, elementList
+
+    elementList = await this.resultsWithRequiredRating
+    for (var i = 0; i < elementList.length; i++) {
+      score = await this.resultsWithRequiredRating.get(i).getAttribute('data-score')
+      if (await price(i + 1).isPresent()) {
+        itemPriceValue = await price(i + 1).getText()
+        itemPriceValue = itemPriceValue.split('€ ')
+        if (score >= reviewMark && Number(itemPriceValue[1]) < Number(limitPrice)) {
+          name = await propertyName(i + 1).getText()
+          console.log(`Review mark: ${score} Price: ${itemPriceValue[1]}`)
+          console.log('Name: ' + name)
+          return name
         }
       }
-      // expect(items.length).to.equal(3)
-      // expect(items[1].getAttribute('data-score')).to.eventually.equal('5.0')
-    })
+    }
+    return name
   }
 }
 
